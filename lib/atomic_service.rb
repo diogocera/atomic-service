@@ -55,14 +55,13 @@ class AtomicService
     end
   end
 
-  def changing_attributes(filter)
-    attrs = {}
-    instance_variables.each do |variable_name|
-      if filter.include?(variable_name.to_s.gsub('@', '').to_sym)
-        attrs[variable_name.to_s.gsub('@', '')] = instance_variable_get(variable_name)
-      end
+  def defined_attributes(*filter)
+    instance_variables.reduce({}) do |hash, variable_name|
+      next unless filter.include?(variable_name.to_s.delete('@').to_sym) || filter.empty?
+
+      hash[variable_name.to_s.delete('@').to_sym] = instance_variable_get(variable_name)
+      hash
     end
-    attrs
   end
 
   def within_transaction(&block)
