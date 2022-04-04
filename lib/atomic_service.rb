@@ -14,15 +14,14 @@ class AtomicService
   def call
     return false unless valid?
     @passed_initial_validation = true
-
     execute
-    valid?
+    @successful = valid?
   end
 
   def call!
     raise Errors::Validation.new(self) unless valid?
     @passed_initial_validation = true
-    execute
+    @successful = execute
     raise Errors::Execution.new(self) unless valid?
   end
 
@@ -32,6 +31,10 @@ class AtomicService
 
   def formatted_errors
     errors.to_a
+  end
+
+  def successful?
+    @successful
   end
 
   private
