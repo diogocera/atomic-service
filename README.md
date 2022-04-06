@@ -53,7 +53,7 @@ service.call! # An exception will be raised if the service does not execute corr
 data = CreatePost.call(title: 'Foo', body: 'Bar', author, current_user)
 
 if !data.successful?
-  puts data.formated_errors
+  puts data.formatted_errors
 end
 ```
 

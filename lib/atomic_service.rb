@@ -41,7 +41,7 @@ class AtomicService
   end
 
   def successful?
-    @successful || false
+    @successful
   end
 
   private
@@ -51,7 +51,7 @@ class AtomicService
   end
 
   def reset_state_vars
-    @successful = nil
+    @successful = false
     @passed_initial_validation = nil
   end
 
