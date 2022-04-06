@@ -39,6 +39,7 @@ end
 service = CreatePost.new(title: 'Foo', body: 'Bar', author, current_user)
 if service.call
   flash[:notice] = 'Post created!'
+  @post = service.post
 else
   flash[:error] = "Error creating post: #{service.formatted_errors}"
 end
