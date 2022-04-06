@@ -12,6 +12,7 @@ class AtomicService
   end
 
   def call
+    reset_state_vars
     return false unless valid?
     @passed_initial_validation = true
     execute
@@ -19,14 +20,20 @@ class AtomicService
   end
 
   def call!
+    reset_state_vars
     raise Errors::Validation.new(self) unless valid?
     @passed_initial_validation = true
-    @successful = execute
+    execute
+    @successful = valid?
     raise Errors::Execution.new(self) unless valid?
   end
 
   def passed_initial_validation?
     @passed_initial_validation
+  end  
+
+  def before_execution?
+    @passed_initial_validation.nil?
   end
 
   def formatted_errors
@@ -34,13 +41,18 @@ class AtomicService
   end
 
   def successful?
-    @successful
+    @successful || false
   end
 
   private
 
   def execute
     raise NotImplementedError, "#{self.class.name}#execute is not yet implemented"
+  end
+
+  def reset_state_vars
+    @successful = nil
+    @passed_initial_validation = nil
   end
 
   def valid?(model = nil)
