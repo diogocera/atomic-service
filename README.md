@@ -22,7 +22,7 @@ class CreatePost < AtomicService
   private 
 
   def create_post
-    @post = Post.create(defined_attributes(:name, :post, :author))
+    @post = Post.create(defined_attributes(:title, :body, :author))
     valid?(@post)
   end 
 
