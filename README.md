@@ -50,7 +50,7 @@ service.call! # An exception will be raised if the service does not execute corr
 
 ### Option 3: Calling directly via class method
 ```
-data = CreatePost.call(title: 'Foo', body: 'Bar', author, current_user)
+data = CreatePost.call(title: 'Foo', body: 'Bar', author: current_user)
 
 if !data.successful?
   puts data.formatted_errors
