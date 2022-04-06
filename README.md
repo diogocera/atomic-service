@@ -4,7 +4,7 @@ A base class to build DRY service objects in Ruby
 ## A service object:
 
 ```
-class CreatePost < AtomicService
+class CreatePostService < AtomicService
   attr_accessor :title, :body, :author
   attr_reader :post
 
@@ -36,7 +36,7 @@ end
 
 ### Option 1: Instantiating and calling the service object
 ```
-service = CreatePost.new(title: 'Foo', body: 'Bar', author, current_user)
+service = CreatePostService.new(title: 'Foo', body: 'Bar', author, current_user)
 if service.call
   flash[:notice] = 'Post created!'
   @post = service.post
@@ -47,13 +47,13 @@ end
 
 ### Option 2: Instantiating and calling the service object with a bang
 ```
-service = CreatePost.new(title: 'Foo', body: 'Bar', author, current_user)
+service = CreatePostService.new(title: 'Foo', body: 'Bar', author, current_user)
 service.call! # An exception will be raised if the service does not execute correctly.
 ```
 
 ### Option 3: Calling directly via class method
 ```
-data = CreatePost.call(title: 'Foo', body: 'Bar', author: current_user)
+data = CreatePostService.call(title: 'Foo', body: 'Bar', author: current_user)
 
 if !data.successful?
   puts data.formatted_errors
