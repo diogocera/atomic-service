@@ -14,6 +14,8 @@ class CreatePost < AtomicService
   def execute
     within_transaction do 
       create_post
+
+      after_commit { @post.send_email_notification }
     end
   end
 
