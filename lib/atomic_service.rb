@@ -13,7 +13,8 @@ class AtomicService
 
   def call
     reset_state_vars
-    return false unless valid?
+    @passed_initial_validation = valid?
+    return @passed_initial_validation unless passed_initial_validation?
     @passed_initial_validation = true
     execute
     @successful = valid?
@@ -21,11 +22,13 @@ class AtomicService
 
   def call!
     reset_state_vars
-    raise Errors::Validation.new(self) unless valid?
+    @passed_initial_validation = valid?
+    raise StandardError.new(self) unless passed_initial_validation?
     @passed_initial_validation = true
     execute
     @successful = valid?
-    raise Errors::Execution.new(self) unless valid?
+    raise StandardError.new(self) unless valid?
+    @successful
   end
 
   def passed_initial_validation?
