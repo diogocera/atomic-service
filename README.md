@@ -1,5 +1,5 @@
 # atomic-service
-A base class to build DRY service objects in Ruby
+A base class to build DRY service objects in Ruby.
 
 ## A service object:
 
@@ -9,13 +9,13 @@ class CreatePostService < AtomicService
   attr_reader :post
 
   validates :title, :body, presence: true 
-  validates_acceptance_of :posts_slots_available, if: :before_execution?
+  validates_acceptance_of :post_slots_available, if: :before_execution?
 
   def execute
     within_transaction do 
       create_post
 
-      after_commit { @post.send_email_notification }
+      after_commit { @post.send_email_notification_to_subscribers }
     end
   end
 
@@ -26,7 +26,7 @@ class CreatePostService < AtomicService
     valid?(@post)
   end 
 
-  def posts_slots_available
+  def post_slots_available
     author.posts.count <= 10
   end
 end
@@ -36,18 +36,17 @@ end
 
 ### Option 1: Instantiating and calling the service object
 ```
-service = CreatePostService.new(title: 'Foo', body: 'Bar', author, current_user)
+service = CreatePostService.new(title: 'Foo', body: 'Bar', author: current_user)
 if service.call
-  flash[:notice] = 'Post created!'
   @post = service.post
 else
-  flash[:error] = "Error creating post: #{service.formatted_errors}"
+  error_message = "Error creating post: #{service.formatted_errors}"
 end
 ```
 
 ### Option 2: Instantiating and calling the service object with a bang
 ```
-service = CreatePostService.new(title: 'Foo', body: 'Bar', author, current_user)
+service = CreatePostService.new(title: 'Foo', body: 'Bar', author: current_user)
 service.call! # An exception will be raised if the service does not execute correctly.
 ```
 
