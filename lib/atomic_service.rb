@@ -16,7 +16,9 @@ class AtomicService
     @passed_initial_validation = valid?
     return @passed_initial_validation unless passed_initial_validation?
     @passed_initial_validation = true
-    execute
+    
+    @execute_within_transaction ? within_transaction { execute } : execute
+    
     @successful = valid?
   end
 
@@ -25,10 +27,16 @@ class AtomicService
     @passed_initial_validation = valid?
     raise StandardError.new(self) unless passed_initial_validation?
     @passed_initial_validation = true
-    execute
+    
+    @execute_within_transaction ? within_transaction { execute } : execute
+    
     @successful = valid?
     raise StandardError.new(self) unless valid?
     @successful
+  end
+
+  def execute_within_transaction
+    @execute_within_transaction = true
   end
 
   def passed_initial_validation?
@@ -75,7 +83,7 @@ class AtomicService
 
   def defined_attributes(*filter)
     instance_variables.reduce({}) do |hash, variable_name|
-      next unless filter.include?(variable_name.to_s.delete('@').to_sym) || filter.empty?
+      next hash unless filter.include?(variable_name.to_s.delete('@').to_sym) || filter.empty?
 
       hash[variable_name.to_s.delete('@').to_sym] = instance_variable_get(variable_name)
       hash
