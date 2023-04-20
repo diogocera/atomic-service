@@ -1,5 +1,5 @@
 # atomic-service
-A base class to build DRY service objects in Ruby.
+AtomicService, a base class to build DRY service objects for Rails apps that take advantage of ActiveModel validations.
 
 ## A service object:
 
